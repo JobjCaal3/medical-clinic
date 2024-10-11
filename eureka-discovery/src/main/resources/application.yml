@@ -1,0 +1,6 @@
+spring:
+  config:
+    import:
+      optional:
+        #cambiar el localhost por el nombre del contenedor de config
+        configserver: http://localhost:8081
