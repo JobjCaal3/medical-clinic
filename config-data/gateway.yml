@@ -18,3 +18,4 @@ eureka:
   instance:
     #cambiar por el nombre del contenedor
     hostname: localhost
+    instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
