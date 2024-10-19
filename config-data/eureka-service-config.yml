@@ -1,0 +1,16 @@
+server:
+  port: 8761
+spring:
+  application:
+    name: eureka-discovery
+eureka:
+  instance:
+    #despues cambiar por el nombre del contenedor
+    hostname: localhost
+    prefer-ip-address: false
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
