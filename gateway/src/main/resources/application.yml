@@ -4,3 +4,5 @@ spring:
       optional:
         #cambiar el localhost por el nombre del contenedor de config
         configserver: http://localhost:8081
+    application:
+      name: gateway
