@@ -6,9 +6,9 @@ spring:
     name: doctors
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_Host_MYSQL}/data_base_doctors
-    username: ${DB_User_MYSQL}
-    password: ${DB_Password}
+    url: jdbc:mysql://localhost:3306/data_base_doctors
+    username: root
+    password: 12Eliu34.
   jpa:
     hibernate:
       ddl-auto: update
