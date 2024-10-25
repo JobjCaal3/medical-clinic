@@ -22,6 +22,7 @@ public class Doctor {
     private LocalDate birthdate;
     @Column(name = "phone_number", length = 9)
     private String phoneNumber;
+    @Enumerated(EnumType.STRING)
     private Specialty specialty;
     @Column(name = "email", unique = true)
     private String email;
