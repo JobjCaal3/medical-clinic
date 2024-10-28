@@ -1,7 +1,7 @@
-package voll.med.doctors.domain.DTO;
+package voll.med.doctors.domain.doctor.dto;
 
-import voll.med.doctors.domain.model.doctor.Doctor;
-import voll.med.doctors.domain.model.doctor.Specialty;
+import voll.med.doctors.domain.doctor.model.Doctor;
+import voll.med.doctors.domain.doctor.model.Specialty;
 
 public record DtoResponseBriefDoctor(Long id,
                                      String firstName,

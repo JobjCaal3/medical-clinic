@@ -1,4 +1,4 @@
-package voll.med.doctors.domain.model.doctor;
+package voll.med.doctors.domain.doctor.model;
 
 public enum Specialty {
     GENERAL_DOCTOR,

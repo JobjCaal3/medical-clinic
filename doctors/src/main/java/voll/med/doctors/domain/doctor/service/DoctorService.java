@@ -1,4 +1,4 @@
-package voll.med.doctors.service;
+package voll.med.doctors.domain.doctor.service;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,14 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import voll.med.doctors.domain.DTO.DtoRegisterDoctor;
-import voll.med.doctors.domain.DTO.DtoResponseBriefDoctor;
-import voll.med.doctors.domain.DTO.DtoResponseDoctor;
-import voll.med.doctors.domain.DTO.DtoUpdateDoctor;
-import voll.med.doctors.domain.model.doctor.Doctor;
-import voll.med.doctors.domain.repository.IDoctorRepository;
+import voll.med.doctors.domain.doctor.dto.DtoRegisterDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoResponseBriefDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoResponseDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoUpdateDoctor;
+import voll.med.doctors.domain.doctor.model.Doctor;
+import voll.med.doctors.domain.doctor.repository.IDoctorRepository;
 
 import java.net.URI;
+import java.util.Comparator;
 
 @Service
 public class DoctorService {
@@ -24,7 +25,7 @@ public class DoctorService {
         this.doctorRepository = doctorRepository;
     }
 
-    public ResponseEntity<DtoResponseDoctor> createDoctor(@Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<DtoResponseDoctor> registerDoctor(@Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
         Doctor doctor = doctorRepository.save(new Doctor(dtoRegisterDoctor));
         DtoResponseDoctor dtoResponseDoctor = new DtoResponseDoctor(doctor);
         URI url = uriComponentsBuilder.path("/doctors/search-doctor/{id}").buildAndExpand(doctor.getId()).toUri();
@@ -73,5 +74,17 @@ public class DoctorService {
     public ResponseEntity<Page<DtoResponseBriefDoctor>> searchDoctorName(String name, Pageable pageable) {
         Page<DtoResponseBriefDoctor> doctors = doctorRepository.findByName(name, pageable).map(DtoResponseBriefDoctor::new);
         return ResponseEntity.ok(doctors);
+    }
+
+    public ResponseEntity<?> assingPatientDoctor(Long patientId) {
+        Doctor doctors = doctorRepository.searchDoctorsBySpecialty("GENERAL_DOCTOR", Pageable.unpaged())
+                .getContent()
+                .stream()
+                .min(Comparator.comparing(doctor -> doctor.getPatientId().size()))
+                .orElseThrow();
+
+        doctors.getPatientId().add(patientId);
+        doctorRepository.save(doctors);
+        return ResponseEntity.ok().build();
     }
 }

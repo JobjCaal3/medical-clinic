@@ -1,10 +1,10 @@
-package voll.med.doctors.domain.DTO;
+package voll.med.doctors.domain.doctor.dto;
 
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import voll.med.doctors.domain.model.doctor.Specialty;
+import voll.med.doctors.domain.doctor.model.Specialty;
 
 import java.time.LocalDate;
 

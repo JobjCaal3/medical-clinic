@@ -1,4 +1,4 @@
-package voll.med.doctors.domain.DTO;
+package voll.med.doctors.domain.doctor.dto;
 
 import jakarta.validation.constraints.NotNull;
 

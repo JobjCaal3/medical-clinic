@@ -1,8 +1,8 @@
-package voll.med.doctors.domain.model.doctor;
+package voll.med.doctors.domain.doctor.model;
 
 import jakarta.persistence.*;
-import voll.med.doctors.domain.DTO.DtoRegisterDoctor;
-import voll.med.doctors.domain.DTO.DtoUpdateDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoRegisterDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoUpdateDoctor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -151,11 +151,11 @@ public class Doctor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Doctor doctor)) return false;
-        return Objects.equals(id, doctor.id) && specialty == doctor.specialty;
+        return Objects.equals(id, doctor.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, specialty);
+        return Objects.hashCode(id);
     }
 }

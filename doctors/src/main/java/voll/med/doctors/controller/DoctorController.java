@@ -10,12 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import voll.med.doctors.domain.DTO.DtoRegisterDoctor;
-import voll.med.doctors.domain.DTO.DtoResponseBriefDoctor;
-import voll.med.doctors.domain.DTO.DtoResponseDoctor;
-import voll.med.doctors.domain.DTO.DtoUpdateDoctor;
-import voll.med.doctors.domain.model.doctor.Specialty;
-import voll.med.doctors.service.DoctorService;
+import voll.med.doctors.domain.doctor.dto.DtoRegisterDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoResponseBriefDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoResponseDoctor;
+import voll.med.doctors.domain.doctor.dto.DtoUpdateDoctor;
+import voll.med.doctors.domain.doctor.service.DoctorService;
 
 @RestController
 @RequestMapping("/doctors/")
@@ -27,10 +26,10 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    @PostMapping("create")
+    @PostMapping("register-doctor")
     @Transactional
-    public ResponseEntity<DtoResponseDoctor> createDoctor(@RequestBody @Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
-        return doctorService.createDoctor(dtoRegisterDoctor, uriComponentsBuilder);
+    public ResponseEntity<DtoResponseDoctor> registerDoctor(@RequestBody @Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
+        return doctorService.registerDoctor(dtoRegisterDoctor, uriComponentsBuilder);
     }
 
     @PutMapping("update-doctor")
@@ -79,10 +78,13 @@ public class DoctorController {
                                                                          @PageableDefault(size = 5, sort = {"firstName", "lastName"}) Pageable pageable) {
         return doctorService.searchDoctorName(name, pageable);
     }
-    //todo enter de patients
+
+    @PutMapping("assign-patient")
+    public ResponseEntity<?> assignPatientDoctor(@RequestParam Long patientId){
+        return doctorService.assingPatientDoctor(patientId);
+    }
+    //todo make a list doctor for amount patient
 
     //todo make a list patient for doctor
-
-    //todo make a list doctor for amount patient
 
 }
