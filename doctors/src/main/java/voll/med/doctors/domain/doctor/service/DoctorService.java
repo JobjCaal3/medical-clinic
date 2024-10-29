@@ -7,22 +7,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import voll.med.doctors.domain.doctor.dto.DtoRegisterDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoResponseBriefDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoResponseDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoUpdateDoctor;
+import voll.med.doctors.domain.client.dto.DtoRequestPatient;
+import voll.med.doctors.domain.client.feing.IPatientClient;
+import voll.med.doctors.domain.doctor.dto.*;
 import voll.med.doctors.domain.doctor.model.Doctor;
 import voll.med.doctors.domain.doctor.repository.IDoctorRepository;
 
 import java.net.URI;
 import java.util.Comparator;
+import java.util.List;
 
 @Service
 public class DoctorService {
     private IDoctorRepository doctorRepository;
+    private IPatientClient patientClient;
     @Autowired
-    public DoctorService(IDoctorRepository doctorRepository) {
+    public DoctorService(IDoctorRepository doctorRepository, IPatientClient patientClient) {
         this.doctorRepository = doctorRepository;
+        this.patientClient = patientClient;
     }
 
     public ResponseEntity<DtoResponseDoctor> registerDoctor(@Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
@@ -45,7 +47,7 @@ public class DoctorService {
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<DtoResponseDoctor> detailsDoctor(Long id) {
+    public ResponseEntity<DtoResponseDoctor> searchDoctorById(Long id) {
         Doctor doctor = doctorRepository.getReferenceById(id);
         DtoResponseDoctor doctorResponse = new DtoResponseDoctor(doctor);
         return ResponseEntity.ok(doctorResponse);
@@ -86,5 +88,13 @@ public class DoctorService {
         doctors.getPatientId().add(patientId);
         doctorRepository.save(doctors);
         return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<List<DtoRequestPatient>> listPatientByDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id).orElseThrow();
+
+        List<DtoRequestPatient> patients = patientClient.getPatientsById(doctor.getPatientId());
+
+        return ResponseEntity.ok(patients);
     }
 }

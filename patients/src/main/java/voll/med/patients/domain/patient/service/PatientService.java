@@ -17,6 +17,7 @@ import voll.med.patients.domain.client.doctor.feing.IDoctorClient;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
@@ -50,7 +51,7 @@ public class PatientService {
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<DtoResponsePatient> detailsPatient(Long id) {
+    public ResponseEntity<DtoResponsePatient> searchPatientById(Long id) {
         Patient patient = patientRepository.findById(id).orElseThrow();
         return ResponseEntity.ok(new DtoResponsePatient(patient));
     }
@@ -72,6 +73,11 @@ public class PatientService {
 
     public ResponseEntity<Page<DtoResponseBriefPatient>> searchPatientName(String name, Pageable pageable) {
         Page<DtoResponseBriefPatient> patients = patientRepository.searchPatientByName(name, pageable).map(DtoResponseBriefPatient::new);
+        return ResponseEntity.ok(patients);
+    }
+
+    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientById(List<Long> id) {
+        List<DtoResponseBriefPatient> patients = patientRepository.findAllById(id).stream().map(DtoResponseBriefPatient::new).collect(Collectors.toList());
         return ResponseEntity.ok(patients);
     }
 }

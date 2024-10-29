@@ -1,7 +1,6 @@
 package voll.med.patients.controller;
 
 import jakarta.validation.Valid;
-import org.apache.http.protocol.ResponseServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +13,8 @@ import voll.med.patients.domain.patient.dto.DtoResponseBriefPatient;
 import voll.med.patients.domain.patient.dto.DtoResponsePatient;
 import voll.med.patients.domain.patient.dto.DtoUpdatePatient;
 import voll.med.patients.domain.patient.service.PatientService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/patients/")
@@ -41,9 +42,9 @@ public class PatientController {
         return patientService.deletePatient(id);
     }
 
-    @GetMapping("details-patient/{id}")
-    public ResponseEntity<DtoResponsePatient> detailsPatient(@PathVariable Long id){
-        return patientService.detailsPatient(id);
+    @GetMapping("search-patient-by/{id}")
+    public ResponseEntity<DtoResponsePatient> searchPatientById(@PathVariable Long id){
+        return patientService.searchPatientById(id);
     }
 
     @GetMapping("List-all-patient")
@@ -66,4 +67,11 @@ public class PatientController {
                                                                            @PageableDefault(size = 5, sort = {"firstName", "lastName"}) Pageable pageable) {
         return patientService.searchPatientName(name, pageable);
     }
+
+    @GetMapping("list-patients-by-id")
+    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientsById(List<Long> id){
+        return patientService.getPatientById(id);
+    }
+
+
 }

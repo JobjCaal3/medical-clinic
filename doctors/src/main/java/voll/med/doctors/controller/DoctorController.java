@@ -10,11 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import voll.med.doctors.domain.doctor.dto.DtoRegisterDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoResponseBriefDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoResponseDoctor;
-import voll.med.doctors.domain.doctor.dto.DtoUpdateDoctor;
+import voll.med.doctors.domain.client.dto.DtoRequestPatient;
+import voll.med.doctors.domain.doctor.dto.*;
 import voll.med.doctors.domain.doctor.service.DoctorService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/doctors/")
@@ -44,9 +44,9 @@ public class DoctorController {
         return doctorService.deletedDoctor(id);
     }
 
-    @GetMapping("details-doctor/{id}")
-    public ResponseEntity<DtoResponseDoctor> detailsDoctor(@PathVariable Long id) {
-        return doctorService.detailsDoctor(id);
+    @GetMapping("search-doctor-by/{id}")
+    public ResponseEntity<DtoResponseDoctor> searchDoctorById(@PathVariable Long id) {
+        return doctorService.searchDoctorById(id);
     }
 
     @GetMapping("list-all-doctors")
@@ -84,7 +84,10 @@ public class DoctorController {
         return doctorService.assingPatientDoctor(patientId);
     }
     //todo make a list doctor for amount patient
-
+    @GetMapping("list-of-patients-by-doctor/{id}")
+    public ResponseEntity<List<DtoRequestPatient>> listPatientByDoctor(@PathVariable Long id){
+        return doctorService.listPatientByDoctor(id);
+    }
     //todo make a list patient for doctor
 
 }
