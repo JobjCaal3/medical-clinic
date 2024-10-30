@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "doctors")
 public interface IDoctorClient {
     @PutMapping("/doctors/assign-patient")
-    void assingPatientDoctor(@RequestParam Long patieneId);
+    void assingPatientDoctor(@RequestParam Long patientId);
 
 }

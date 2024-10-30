@@ -1,6 +1,8 @@
 package voll.med.patients.domain.patient.service;
 
 import jakarta.validation.Valid;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
+    private static final Log log = LogFactory.getLog(PatientService.class);
     private IPatientRepository patientRepository;
     private IDoctorClient doctorClient;
 
@@ -33,8 +36,9 @@ public class PatientService {
     public ResponseEntity<DtoResponsePatient> registerPatient(@Valid DtoRegisterPatient dtoRegisterPatient, UriComponentsBuilder uriComponentsBuilder) {
         Patient patient = patientRepository.save(new Patient(dtoRegisterPatient));
         DtoResponsePatient responsePatient = new DtoResponsePatient(patient);
+        log.info("guardo al paciente y ahora va a pasar a agregar al doctor " + patient.getId());
         doctorClient.assingPatientDoctor(patient.getId());
-
+        log.info("paso la asignacion de doctor");
         URI url = uriComponentsBuilder.path("patients/register-patient/{id}").buildAndExpand(patient.getId()).toUri();
         return ResponseEntity.created(url).body(responsePatient);
     }

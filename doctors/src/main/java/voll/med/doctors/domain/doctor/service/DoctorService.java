@@ -1,6 +1,8 @@
 package voll.med.doctors.domain.doctor.service;
 
 import jakarta.validation.Valid;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import java.util.List;
 
 @Service
 public class DoctorService {
+    private static final Log log = LogFactory.getLog(DoctorService.class);
     private IDoctorRepository doctorRepository;
     private IPatientClient patientClient;
     @Autowired
@@ -79,12 +82,13 @@ public class DoctorService {
     }
 
     public ResponseEntity<?> assingPatientDoctor(Long patientId) {
+        log.info("esta llefando a el metodo en service");
         Doctor doctors = doctorRepository.searchDoctorsBySpecialty("GENERAL_DOCTOR", Pageable.unpaged())
                 .getContent()
                 .stream()
                 .min(Comparator.comparing(doctor -> doctor.getPatientId().size()))
                 .orElseThrow();
-
+        log.info("trabjo los doctores:  " + doctors);
         doctors.getPatientId().add(patientId);
         doctorRepository.save(doctors);
         return ResponseEntity.ok().build();
