@@ -83,11 +83,14 @@ public class DoctorController {
     public ResponseEntity<?> assignPatientDoctor(@RequestParam Long patientId){
         return doctorService.assingPatientDoctor(patientId);
     }
-    //todo make a list doctor for amount patient
+
     @GetMapping("list-of-patients-by-doctor/{id}")
     public ResponseEntity<List<DtoRequestPatient>> listPatientByDoctor(@PathVariable Long id){
         return doctorService.listPatientByDoctor(id);
     }
-    //todo make a list patient for doctor
 
+    @GetMapping("find-doctor-by-patient-id")
+    public ResponseEntity<DtoResponseBriefDoctor> findDoctorByPatientId(@RequestParam Long patientId){
+        return doctorService.findDoctorByPatientId(patientId);
+    }
 }

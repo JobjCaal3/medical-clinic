@@ -101,4 +101,10 @@ public class DoctorService {
 
         return ResponseEntity.ok(patients);
     }
+
+    public ResponseEntity<DtoResponseBriefDoctor> findDoctorByPatientId(Long patientId) {
+        Doctor doctor = doctorRepository.findDoctorByPatientId(patientId);
+        DtoResponseBriefDoctor responseBriefDoctor = new DtoResponseBriefDoctor(doctor);
+        return ResponseEntity.ok(responseBriefDoctor);
+    }
 }

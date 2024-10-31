@@ -9,6 +9,6 @@ import java.util.List;
 @FeignClient(name = "patients")
 public interface IPatientClient {
     @GetMapping("/patients/list-patients-by-id")
-    List<DtoRequestPatient> getPatientsById(@RequestBody List<Long> patientIds);
+    List<DtoRequestPatient> getPatientsById(@RequestParam List<Long> patientIds);
 
 }

@@ -9,10 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-import voll.med.patients.domain.patient.dto.DtoRegisterPatient;
-import voll.med.patients.domain.patient.dto.DtoResponseBriefPatient;
-import voll.med.patients.domain.patient.dto.DtoResponsePatient;
-import voll.med.patients.domain.patient.dto.DtoUpdatePatient;
+import voll.med.patients.domain.client.doctor.dto.DtoRequestDoctor;
+import voll.med.patients.domain.patient.dto.*;
 import voll.med.patients.domain.patient.model.Patient;
 import voll.med.patients.domain.patient.repository.IPatientRepository;
 import voll.med.patients.domain.client.doctor.feing.IDoctorClient;
@@ -80,8 +78,18 @@ public class PatientService {
         return ResponseEntity.ok(patients);
     }
 
-    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientById(List<Long> id) {
-        List<DtoResponseBriefPatient> patients = patientRepository.findAllById(id).stream().map(DtoResponseBriefPatient::new).collect(Collectors.toList());
+    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientById(List<Long> patientIds) {
+        List<DtoResponseBriefPatient> patients = patientRepository.findAllById(patientIds).stream().map(DtoResponseBriefPatient::new).collect(Collectors.toList());
         return ResponseEntity.ok(patients);
     }
+
+    public ResponseEntity<DtoResponsePatientByDoctor> findPatientPrimaryDoctor(Long id) {
+        DtoResponseBriefPatient patient = patientRepository.findById(id).map(DtoResponseBriefPatient::new).orElseThrow();
+        DtoRequestDoctor dtoRequestDoctor =  doctorClient.findDoctorByPatientId(id);
+
+        DtoResponsePatientByDoctor responsePatientByDoctor = new DtoResponsePatientByDoctor(patient, dtoRequestDoctor);
+        return ResponseEntity.ok(responsePatientByDoctor);
+    }
+
+
 }

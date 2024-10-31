@@ -7,4 +7,5 @@ public record DtoRequestPatient(Long Id,
                                 String phoneNumber,
                                 String email,
                                 Boolean active) {
+
 }

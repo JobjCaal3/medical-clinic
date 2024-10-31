@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+import voll.med.patients.domain.patient.dto.DtoResponsePatientByDoctor;
 import voll.med.patients.domain.patient.dto.DtoRegisterPatient;
 import voll.med.patients.domain.patient.dto.DtoResponseBriefPatient;
 import voll.med.patients.domain.patient.dto.DtoResponsePatient;
@@ -69,9 +70,14 @@ public class PatientController {
     }
 
     @GetMapping("list-patients-by-id")
-    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientsById(List<Long> id){
-        return patientService.getPatientById(id);
+    public ResponseEntity<List<DtoResponseBriefPatient>> getPatientsById(@RequestParam List<Long> patientIds){
+        return patientService.getPatientById(patientIds);
     }
 
-
+    @GetMapping("find-patient-primary-doctor/{id}")
+    public ResponseEntity<DtoResponsePatientByDoctor> findPatientPrimaryDoctor(@PathVariable Long id){
+        return patientService.findPatientPrimaryDoctor(id);
+    }
 }
+
+
