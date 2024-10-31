@@ -3,12 +3,18 @@ server:
 
 spring:
   application:
-    name: gateway
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true
+    name: doctors
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_Host_MYSQL}/data_base_doctors
+    username: ${DB_User_MYSQL}
+    password: ${DB_Password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+
 eureka:
   client:
     fetch-registry: true
