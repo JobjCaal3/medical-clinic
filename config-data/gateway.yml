@@ -9,6 +9,9 @@ spring:
       discovery:
         locator:
           enabled: true
+    loadbalancer:
+      ribbon:
+        enabled: false
 eureka:
   client:
     fetch-registry: true
