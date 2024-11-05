@@ -25,6 +25,7 @@
 		<module>configurations</module>
 		<module>doctors</module>
 		<module>patients</module>
+		<module>security-service</module>
 	</modules>
 
 	<dependencies>
