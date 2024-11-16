@@ -32,10 +32,10 @@ public class DoctorService {
 
     public ResponseEntity<DtoResponseDoctor> registerDoctor(@Valid DtoRegisterDoctor dtoRegisterDoctor, UriComponentsBuilder uriComponentsBuilder) {
         Doctor doctor = doctorRepository.save(new Doctor(dtoRegisterDoctor));
-        DtoResponseDoctor dtoResponseDoctor = new DtoResponseDoctor(doctor);
+
         URI url = uriComponentsBuilder.path("/doctors/search-doctor/{id}").buildAndExpand(doctor.getId()).toUri();
 
-        return ResponseEntity.created(url).body(dtoResponseDoctor);
+        return ResponseEntity.created(url).body(new DtoResponseDoctor(doctor));
     }
 
     public ResponseEntity<DtoResponseDoctor> updateDoctor(@Valid DtoUpdateDoctor dtoUpdateDoctor) {
@@ -82,13 +82,12 @@ public class DoctorService {
     }
 
     public ResponseEntity<?> assingPatientDoctor(Long patientId) {
-        log.info("esta llefando a el metodo en service");
         Doctor doctors = doctorRepository.searchDoctorsBySpecialty("GENERAL_DOCTOR", Pageable.unpaged())
                 .getContent()
                 .stream()
                 .min(Comparator.comparing(doctor -> doctor.getPatientId().size()))
                 .orElseThrow();
-        log.info("trabjo los doctores:  " + doctors);
+
         doctors.getPatientId().add(patientId);
         doctorRepository.save(doctors);
         return ResponseEntity.ok().build();

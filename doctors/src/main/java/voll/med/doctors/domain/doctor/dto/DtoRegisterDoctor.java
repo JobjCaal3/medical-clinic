@@ -8,11 +8,12 @@ import voll.med.doctors.domain.doctor.model.Specialty;
 
 import java.time.LocalDate;
 
-public record DtoRegisterDoctor(@NotBlank(message = "enter your first name") String firstName,
-                                @NotBlank(message = "enter tour last name") String lastName,
-                                @NotNull(message = "enter your birthdate") LocalDate birthdate,
-                                @NotBlank(message = "enter your phoneNumber") String phoneNumber,
-                                @NotNull(message = "plesae enter one specialty") Specialty specialty,
-                                @NotBlank @Email(message = "email invalid, enter a valid email") String email) {
+public record DtoRegisterDoctor(@NotBlank String firstName,
+                                @NotBlank String lastName,
+                                @NotNull LocalDate birthdate,
+                                @NotBlank String phoneNumber,
+                                @NotNull Specialty specialty,
+                                @NotBlank @Email String email,
+                                @NotNull Long userId) {
 
 }

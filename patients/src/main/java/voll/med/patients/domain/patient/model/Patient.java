@@ -28,6 +28,8 @@ public class Patient {
     private Boolean active;
     @Column(name = "entry_date")
     private LocalDateTime entryDate;
+    @Column(name = "user_id")
+    private Long userId;
 
     public Patient() {}
 
@@ -38,6 +40,7 @@ public class Patient {
         this.birthdaydate = dtoRegisterPatient.birthdaydate();
         this.phoneNumber = dtoRegisterPatient.phoneNumber();
         this.email = dtoRegisterPatient.email();
+        this.userId = dtoRegisterPatient.userId();
     }
 
     public void update(DtoUpdatePatient dtoUpdatePatient) {

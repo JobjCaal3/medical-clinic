@@ -32,7 +32,8 @@ public class Doctor {
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "patient_id")
     private List<Long> patientId = new ArrayList<>();
-
+    @Column(name = "user_id")
+    private Long userId;
     public Doctor() {}
 
     public Doctor(DtoRegisterDoctor dtoRegisterDoctor) {
@@ -44,6 +45,7 @@ public class Doctor {
         this.specialty = dtoRegisterDoctor.specialty();
         this.active = true;
         this.entryDate = LocalDateTime.now();
+        this.userId = dtoRegisterDoctor.userId();
     }
 
     public void update(DtoUpdateDoctor dtoUpdateDoctor) {

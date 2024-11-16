@@ -1,6 +1,7 @@
 server:
   port: 0
-  #error:include-stacktrace=never:
+  #error:
+    #include-stacktrace: never
 spring:
   application:
     name: security-service
@@ -29,3 +30,11 @@ eureka:
     hostname: localhost
     prefer-ip-address: true
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+
+security:
+  jwt:
+    key:
+      private: "security.signature"
+    user:
+      generator: "voll.med"
