@@ -29,6 +29,10 @@ public class GatewayConfig {
                         .path("/authentication/**")
                         .filters(f->f.filter(filter))
                         .uri("lb://authentication-service"))
+                .route("eureka-discovery", r -> r
+                        .path("/eureka/**")
+                        .filters(f->f.filters(filter))
+                        .uri("lb://eureka-service"))
                 .build();
     }
 }

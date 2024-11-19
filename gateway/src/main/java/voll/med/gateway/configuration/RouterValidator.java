@@ -10,7 +10,8 @@ import java.util.function.Predicate;
 public class RouterValidator {
     public static final List<String> openEndPints = List.of(
             "/authentication/register-user-doctor",
-            "/authentication/login-user");
+            "/authentication/login-user",
+            "");
 
     public Predicate<ServerHttpRequest> isSecured = request -> openEndPints.stream()
             .noneMatch(uri -> request.getURI().getPath().contains(uri));
