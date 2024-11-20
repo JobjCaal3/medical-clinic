@@ -1,6 +1,7 @@
 package voll.med.gateway.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
@@ -19,20 +20,16 @@ public class GatewayConfig {
                 .route("doctors",r -> r
                         .path("/doctors/**")
                         .filters(f->f.filter(filter))
-                        .uri("lb://doctors-service"))
+                        .uri("lb://doctors"))
                 .route("patients", r -> r
                         .path("/patients/**")
                         .filters(f->f.filter(filter))
-                        .uri("lb://patients-service")
+                        .uri("lb://patients")
                         )
                 .route("security-service", r -> r
                         .path("/authentication/**")
-                        .filters(f->f.filter(filter))
-                        .uri("lb://authentication-service"))
-                .route("eureka-discovery", r -> r
-                        .path("/eureka/**")
-                        .filters(f->f.filters(filter))
-                        .uri("lb://eureka-service"))
+                        .filters(f -> f.filter(filter))
+                        .uri("lb://security-service"))
                 .build();
     }
 }

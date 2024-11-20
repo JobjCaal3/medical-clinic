@@ -1,5 +1,7 @@
 package voll.med.gateway.configuration;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -17,6 +19,7 @@ import voll.med.gateway.client.securityclient.ISecurityClient;
 @Component
 @RefreshScope
 public class AuthenticationFilter implements GatewayFilter {
+    private static final Log log = LogFactory.getLog(AuthenticationFilter.class);
     private RouterValidator routerValidator;
     private ISecurityClient securityClient;
     @Autowired
@@ -27,9 +30,12 @@ public class AuthenticationFilter implements GatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        log.info("llega aqui 1");
         ServerHttpRequest request = exchange.getRequest();
+        log.info("llega aqui 2" + request.getURI().getPath());
         if(routerValidator.isSecured.test(request)) {
-            String bearerToken = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+            log.info("llega aqui 3");
+            String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
             if (authenticationMissing(request)) {
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
@@ -42,8 +48,10 @@ public class AuthenticationFilter implements GatewayFilter {
             if (!validateToken){
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
+        }else {
+            log.info("Open endpoint: " + request.getURI().getPath());
         }
-
+            log.info("llega aqui 4");
         return chain.filter(exchange);
     }
 

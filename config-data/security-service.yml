@@ -32,9 +32,3 @@ eureka:
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
 
-security:
-  jwt:
-    key:
-      private: "security.signature"
-    user:
-      generator: "voll.med"
