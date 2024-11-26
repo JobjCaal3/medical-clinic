@@ -13,6 +13,7 @@ public class User {
     @Column(name = "user_name", unique = true)
     private String userName;
     private String password;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private Boolean isAccountNonLocked;
     public User() {

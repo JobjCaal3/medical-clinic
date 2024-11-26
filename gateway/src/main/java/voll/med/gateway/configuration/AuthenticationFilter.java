@@ -14,52 +14,41 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import voll.med.gateway.client.securityclient.ISecurityClient;
+import voll.med.gateway.Service.JwtUtils;
+import voll.med.gateway.exceptions.ValidationIntegration;
+
+import java.util.List;
 
 @Component
 @RefreshScope
 public class AuthenticationFilter implements GatewayFilter {
     private static final Log log = LogFactory.getLog(AuthenticationFilter.class);
     private RouterValidator routerValidator;
-    private ISecurityClient securityClient;
+    private JwtUtils jwtUtils;
     @Autowired
-    public AuthenticationFilter(RouterValidator routerValidator, ISecurityClient securityClient) {
+    public AuthenticationFilter(RouterValidator routerValidator, JwtUtils jwtUtils) {
         this.routerValidator = routerValidator;
-        this.securityClient = securityClient;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        log.info("llega aqui 1");
         ServerHttpRequest request = exchange.getRequest();
-        log.info("llega aqui 2" + request.getURI().getPath());
+
         if(routerValidator.isSecured.test(request)) {
-            log.info("llega aqui 3");
-            String bearerToken = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+            if (authenticationMissing(request))
+                throw new ValidationIntegration(HttpStatus.UNAUTHORIZED, "without authority");
 
-            if (authenticationMissing(request)) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
-            }
-            if (!StringUtils.hasText(bearerToken) && !bearerToken.startsWith("Bearer ")) {
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
-            }
+            String bearerToken = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
-            final Boolean validateToken = securityClient.validateToken(bearerToken);
-            if (!validateToken){
-                return onError(exchange, HttpStatus.UNAUTHORIZED);
-            }
-        }else {
-            log.info("Open endpoint: " + request.getURI().getPath());
+            if (!StringUtils.hasText(bearerToken) && !bearerToken.startsWith("Bearer "))
+                throw new ValidationIntegration(HttpStatus.UNAUTHORIZED, "Token invalid");
+
+            jwtUtils.validateToken(bearerToken);
         }
-            log.info("llega aqui 4");
         return chain.filter(exchange);
     }
 
-    private Mono<Void> onError(ServerWebExchange exchange, HttpStatus httpStatus){
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        return response.setComplete();
-    }
 
     private Boolean authenticationMissing(ServerHttpRequest request){
         return !request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION);

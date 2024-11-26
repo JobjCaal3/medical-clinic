@@ -15,27 +15,13 @@ public class RouterValidator {
 
     public static final List<String> openEndpoints = List.of(
             "/authentication/register-user-patient",
+            "/authentication/register-user-doctor",
             "/authentication/login-user",
             "/patients/register-patient"
     );
 
-    public Predicate<ServerHttpRequest> isSecured = request -> {
-        String requestPath = normalizePath(request.getURI().getPath());
-        log.info("Evaluating path: " + requestPath);
 
-        boolean isOpen = openEndpoints.stream()
-                .map(this::normalizePath) // Normaliza las rutas registradas.
-                .anyMatch(openEndpoint -> openEndpoint.equals(requestPath));
-
-        log.info("Is secured? " + !isOpen + " for path: " + requestPath);
-        return !isOpen; // Devuelve `true` si la ruta NO está en la lista abierta.
-    };
-
-    /**
-     * Normaliza la ruta para evitar problemas con barras finales o caracteres no deseados.
-     */
-    private String normalizePath(String path) {
-        if (path == null) return "";
-        return path.trim().replaceAll("/$", ""); // Elimina barra al final si existe.
-    }
+    public Predicate<ServerHttpRequest> isSecured =
+            request -> openEndpoints.stream()
+                    .noneMatch(uri -> request.getURI().getPath().contains(uri));
 }

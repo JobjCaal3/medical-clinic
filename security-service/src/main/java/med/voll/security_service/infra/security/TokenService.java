@@ -9,10 +9,9 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
+import med.voll.security_service.domain.user.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -31,10 +30,11 @@ public class TokenService {
     @Value("${security.jwt.user.generator}")
     private String propietarieGenerator;
 
-    public String createToken(Authentication autentication) {
+    public String createToken(User user) {
         String JwtToken;
-        String userName = autentication.getName();
-        //String authorities = autentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        String userName = user.getUserName();
+        //String authorities = user.getRole().stream().map(GrantedAuthority::getAuthority)
+        //       .collect(Collectors.joining(","));
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
@@ -87,7 +87,7 @@ public class TokenService {
     }
 
     private Instant generarFechaExpiracion() {
-        return Instant.now().plus(Duration.ofHours(2));
+        return Instant.now().plus(Duration.ofHours(0).plusMinutes(5));
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {

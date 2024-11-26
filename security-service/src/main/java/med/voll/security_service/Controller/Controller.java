@@ -6,6 +6,7 @@ import med.voll.security_service.domain.user.dto.*;
 import med.voll.security_service.domain.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -21,22 +22,21 @@ public class Controller {
     }
 
     @PostMapping("register-user-doctor")
-    public ResponseEntity<DtoResponseUserDoctor> registerDoctorUser(@RequestBody @Valid DtoRegisterDoctorUser registerDoctorUser, UriComponentsBuilder uriComponentsBuilder){
+    @Transactional
+    public ResponseEntity<DtoResponseUserDoctor> registerDoctorUser(@RequestBody @Valid DtoRegisterDoctorUser registerDoctorUser, UriComponentsBuilder uriComponentsBuilder) {
         return userService.registerDoctorUser(registerDoctorUser, uriComponentsBuilder);
     }
 
     @PostMapping("register-user-patient")
-    public ResponseEntity<DtoResponseUserPatient> registerPatientUser(@RequestBody @Valid DtoRegisterPatientUser registerPatientUser, UriComponentsBuilder uriComponentsBuilder){
+    @Transactional
+    public ResponseEntity<DtoResponseUserPatient> registerPatientUser(@RequestBody @Valid DtoRegisterPatientUser registerPatientUser, UriComponentsBuilder uriComponentsBuilder) {
+
         return userService.registerPatientUser(registerPatientUser, uriComponentsBuilder);
     }
 
     @PostMapping("login-user")
+    @Transactional
     public ResponseEntity<DtoResponseLoginUser> loginUser(@RequestBody @Valid DtoLoginUser loginUser){
         return userService.loginUser(loginUser);
-    }
-
-    @GetMapping("validate-token")
-    public ResponseEntity<Boolean> validateToken(@RequestParam String token){
-        return userService.validateToken(token);
     }
 }
