@@ -15,7 +15,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     Page<Doctor> findAllByActiveFalse(Pageable pageable);
     @Query("SELECT d FROM Doctor d WHERE UPPER(d.specialty) LIKE CONCAT('%', UPPER(:specialty),'%')")
     Page<Doctor> searchDoctorsBySpecialty(@Param("specialty") String specialty, Pageable pageable);
-    @Query("SELECT d FROM Doctor d WHERE UPPER(CONCAT(d.firstName, ' ', d.lastName)) = UPPER(:name) AND d.active = true")
+    @Query("SELECT d FROM Doctor d WHERE UPPER(CONCAT(d.firstName, ' ', d.lastName)) LIKE UPPER(CONCAT('%', :name, '%')) AND d.active = true")
     Page<Doctor> findByName(@Param("name") String name, Pageable pageable);
     Doctor findDoctorByPatientId(Long PatientId);
 }

@@ -20,7 +20,7 @@ public class Doctor {
     @Column(name = "last_name")
     private String lastName;
     private LocalDate birthdate;
-    @Column(name = "phone_number", length = 9)
+    @Column(name = "phone_number")
     private String phoneNumber;
     @Enumerated(EnumType.STRING)
     private Specialty specialty;
@@ -32,7 +32,8 @@ public class Doctor {
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "patient_id")
     private List<Long> patientId = new ArrayList<>();
-
+    @Column(name = "user_id")
+    private Long userId;
     public Doctor() {}
 
     public Doctor(DtoRegisterDoctor dtoRegisterDoctor) {
@@ -44,19 +45,20 @@ public class Doctor {
         this.specialty = dtoRegisterDoctor.specialty();
         this.active = true;
         this.entryDate = LocalDateTime.now();
+        this.userId = dtoRegisterDoctor.userId();
     }
 
     public void update(DtoUpdateDoctor dtoUpdateDoctor) {
-        if (dtoUpdateDoctor.firstName() != null){
+        if (dtoUpdateDoctor.firstName() != null && !dtoUpdateDoctor.firstName().isBlank()){
             this.firstName = dtoUpdateDoctor.firstName();
         }
-        if (dtoUpdateDoctor.lastName() != null){
+        if (dtoUpdateDoctor.lastName() != null && !dtoUpdateDoctor.lastName().isBlank()){
             this.lastName = dtoUpdateDoctor.lastName();
         }
         if (dtoUpdateDoctor.birthdate() != null){
             this.birthdate = dtoUpdateDoctor.birthdate();
         }
-        if (dtoUpdateDoctor.phoneNumber() != null){
+        if (dtoUpdateDoctor.phoneNumber() != null && !dtoUpdateDoctor.firstName().isBlank()){
             this.phoneNumber = dtoUpdateDoctor.phoneNumber();
         }
     }

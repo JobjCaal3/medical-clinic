@@ -12,6 +12,6 @@ import voll.med.patients.domain.patient.model.Patient;
 public interface IPatientRepository extends JpaRepository<Patient, Long> {
     Page<Patient> findAllByActiveTrue(Pageable pageable);
     Page<Patient> findAllByActiveFalse(Pageable pageable);
-    @Query("SELECT p FROM Patient p WHERE UPPER(CONCAT(p.firstName, ' ', p.lastName)) = UPPER(:name) AND p.active = true ")
+    @Query("SELECT p FROM Patient p WHERE UPPER(CONCAT(p.firstName, ' ', p.lastName)) LIKE UPPER(CONCAT('%',:name,'%')) AND p.active = true ")
     Page<Patient> searchPatientByName(@Param("name") String name, Pageable pageable);
 }

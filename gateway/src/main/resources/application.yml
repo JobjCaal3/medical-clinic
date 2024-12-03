@@ -4,3 +4,10 @@ spring:
     import: optional:configserver:http://localhost:8081
   application:
     name: gateway
+
+security:
+  jwt:
+    key:
+      private: "security.signature"
+    user:
+      generator: "voll.med"
