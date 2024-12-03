@@ -20,16 +20,16 @@ public class GatewayConfig {
                 .route("doctors",r -> r
                         .path("/doctors/**")
                         .filters(f->f.filter(filter))
-                        .uri("http://localhost:8083"))
+                        .uri("lb://doctors"))
                 .route("patients", r -> r
                         .path("/patients/**")
                         .filters(f->f.filter(filter))
-                        .uri("http://localhost:8084")
+                        .uri("lb://patients")
                         )
                 .route("security-service", r -> r
                         .path("/authentication/**")
                         .filters(f -> f.filter(filter))
-                        .uri("http://localhost:8082"))
+                        .uri("lb://security-service"))
                 .build();
     }
 }

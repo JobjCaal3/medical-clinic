@@ -1,11 +1,11 @@
 package voll.med.doctors.domain.doctor.service;
 
 import jakarta.validation.Valid;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -14,6 +14,7 @@ import voll.med.doctors.domain.client.feing.IPatientClient;
 import voll.med.doctors.domain.doctor.dto.*;
 import voll.med.doctors.domain.doctor.model.Doctor;
 import voll.med.doctors.domain.doctor.repository.IDoctorRepository;
+import voll.med.doctors.infra.exceptions.ValidationIntegration;
 
 import java.net.URI;
 import java.util.Comparator;
@@ -21,7 +22,6 @@ import java.util.List;
 
 @Service
 public class DoctorService {
-    private static final Log log = LogFactory.getLog(DoctorService.class);
     private IDoctorRepository doctorRepository;
     private IPatientClient patientClient;
     @Autowired
@@ -39,19 +39,19 @@ public class DoctorService {
     }
 
     public ResponseEntity<DtoResponseDoctor> updateDoctor(@Valid DtoUpdateDoctor dtoUpdateDoctor) {
-        Doctor doctor = doctorRepository.findById(dtoUpdateDoctor.id()).orElseThrow();
+        Doctor doctor = doctorRepository.findById(dtoUpdateDoctor.id()).orElseThrow(()->new ValidationIntegration("doctor not found"));
         doctor.update(dtoUpdateDoctor);
         return ResponseEntity.ok(new DtoResponseDoctor(doctor));
     }
 
     public ResponseEntity deletedDoctor(Long id) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow();
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(()->new ValidationIntegration("doctor not found"));
         doctor.deleted(doctor);
         return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<DtoResponseDoctor> searchDoctorById(Long id) {
-        Doctor doctor = doctorRepository.getReferenceById(id);
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(()->new ValidationIntegration("doctor not found"));
         DtoResponseDoctor doctorResponse = new DtoResponseDoctor(doctor);
         return ResponseEntity.ok(doctorResponse);
     }
@@ -94,7 +94,7 @@ public class DoctorService {
     }
 
     public ResponseEntity<List<DtoRequestPatient>> listPatientByDoctor(Long id) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow();
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(()->new ValidationIntegration("doctor not found"));
 
         List<DtoRequestPatient> patients = patientClient.getPatientsById(doctor.getPatientId());
 

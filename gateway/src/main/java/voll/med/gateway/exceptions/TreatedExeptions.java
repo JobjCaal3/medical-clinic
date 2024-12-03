@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class TreatedExeptions {
+
+
+    @ExceptionHandler(ValidationIntegration.class)
+    public ResponseEntity<String> treatedValidationItegration(ValidationIntegration e){
+        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+    }
+
+
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<String> treatedTokenExpired(TokenExpiredException e){
         String message = "token Expired";
@@ -19,10 +27,5 @@ public class TreatedExeptions {
     public ResponseEntity<String> treatedTokenVerification(JWTVerificationException e){
         String message = "token invalid";
         return ResponseEntity.badRequest().body(message);
-    }
-
-    @ExceptionHandler(ValidationIntegration.class)
-    public ResponseEntity<String> treatedValidationItegration(ValidationIntegration e){
-        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
     }
 }

@@ -43,7 +43,7 @@ public class UserService {
     public ResponseEntity<DtoResponseUserDoctor> registerDoctorUser(DtoRegisterDoctorUser registerDoctorUser, UriComponentsBuilder uriComponentsBuilder) {
         Optional<User> user = userRepository.findByUserName(registerDoctorUser.userName());
         if (user.isPresent()) {
-            throw new ValidationIntegration("user in use");
+            throw new ValidationIntegration("username in use");
         }
 
         User newUser = new User();
@@ -64,7 +64,7 @@ public class UserService {
     public ResponseEntity<DtoResponseUserPatient> registerPatientUser(DtoRegisterPatientUser registerPatientUser, UriComponentsBuilder uriComponentsBuilder) {
         Optional<User> userExist = userRepository.findByUserName(registerPatientUser.userName());
         if (userExist.isPresent()) {
-            throw new ValidationIntegration("user in use");
+            throw new ValidationIntegration("username in use");
         }
 
         User newUser = new User();
@@ -84,34 +84,15 @@ public class UserService {
 
 
     public ResponseEntity<DtoResponseLoginUser> loginUser(DtoLoginUser loginUser) {
-        User user = userRepository.findByUserName(loginUser.userName()).orElseThrow();
+        User user = userRepository.findByUserName(loginUser.userName()).orElseThrow(() -> new ValidationIntegration("Incorrect password or username, enter your credentials correctly"));
 
-        if (!user.getAccountNonLocked()) {
+        if (!user.getAccountNonLocked())
             throw new ValidationIntegration("this account is bloked");
-        }
+
         if (!passwordEncoder.matches(loginUser.password(), user.getPassword()))
-            return ResponseEntity.badRequest().build();
+            throw new ValidationIntegration("Incorrect password or username, enter your credentials correctly");
 
         String token = tokenService.createToken(user);
         return ResponseEntity.ok(new DtoResponseLoginUser(token));
     }
-
-//    public ResponseEntity<Boolean> validateToken(String token) {
-//        if (token.isEmpty() || token == null)
-//            return ResponseEntity.badRequest().body(false);
-//
-//        String userName = tokenService.extractUsername(token);
-//        if(!userRepository.findByUserName(userName).isPresent())
-//            return ResponseEntity.badRequest().body(false);
-//
-//        boolean isValid = tokenService.validateToken(token);
-//        if (!isValid) {
-//            return ResponseEntity.badRequest().body(false);
-//        }
-//
-//        return ResponseEntity.ok(true);
-//    }
-//    private Collection<GrantedAuthority> getToAuthorities(User user) {
-//        return Collections.singleton(new SimpleGrantedAuthority(user.getRole().toString()));
-//    }
 }

@@ -1,8 +1,6 @@
 package voll.med.patients.domain.patient.service;
 
 import jakarta.validation.Valid;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +12,7 @@ import voll.med.patients.domain.patient.dto.*;
 import voll.med.patients.domain.patient.model.Patient;
 import voll.med.patients.domain.patient.repository.IPatientRepository;
 import voll.med.patients.domain.client.doctor.feing.IDoctorClient;
+import voll.med.patients.infra.exception.ValidationIntegration;
 
 import java.net.URI;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientService {
-    private static final Log log = LogFactory.getLog(PatientService.class);
     private IPatientRepository patientRepository;
     private IDoctorClient doctorClient;
 
@@ -33,28 +31,27 @@ public class PatientService {
 
     public ResponseEntity<DtoResponsePatient> registerPatient(@Valid DtoRegisterPatient dtoRegisterPatient, UriComponentsBuilder uriComponentsBuilder) {
         Patient patient = patientRepository.save(new Patient(dtoRegisterPatient));
-        DtoResponsePatient responsePatient = new DtoResponsePatient(patient);
-        log.info("guardo al paciente y ahora va a pasar a agregar al doctor " + patient.getId());
+
         doctorClient.assingPatientDoctor(patient.getId());
-        log.info("paso la asignacion de doctor");
+
         URI url = uriComponentsBuilder.path("patients/register-patient/{id}").buildAndExpand(patient.getId()).toUri();
-        return ResponseEntity.created(url).body(responsePatient);
+        return ResponseEntity.created(url).body(new DtoResponsePatient(patient));
     }
 
     public ResponseEntity<DtoResponsePatient> updatePatient(@Valid DtoUpdatePatient dtoUpdatePatient) {
-        Patient patient = patientRepository.findById(dtoUpdatePatient.Id()).orElseThrow();
+        Patient patient = patientRepository.findById(dtoUpdatePatient.Id()).orElseThrow(()->new ValidationIntegration("Patient not found"));
         patient.update(dtoUpdatePatient);
        return ResponseEntity.ok(new DtoResponsePatient(patient));
     }
 
     public ResponseEntity<?> deletePatient(Long id) {
-        Patient patient = patientRepository.findById(id).orElseThrow();
+        Patient patient = patientRepository.findById(id).orElseThrow(()->new ValidationIntegration("Patient not found"));
         patient.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     public ResponseEntity<DtoResponsePatient> searchPatientById(Long id) {
-        Patient patient = patientRepository.findById(id).orElseThrow();
+        Patient patient = patientRepository.findById(id).orElseThrow(()->new ValidationIntegration("Patient not found"));
         return ResponseEntity.ok(new DtoResponsePatient(patient));
     }
 
@@ -82,9 +79,8 @@ public class PatientService {
         List<DtoResponseBriefPatient> patients = patientRepository.findAllById(patientIds).stream().map(DtoResponseBriefPatient::new).collect(Collectors.toList());
         return ResponseEntity.ok(patients);
     }
-
     public ResponseEntity<DtoResponsePatientByDoctor> findPatientPrimaryDoctor(Long id) {
-        DtoResponseBriefPatient patient = patientRepository.findById(id).map(DtoResponseBriefPatient::new).orElseThrow();
+        DtoResponseBriefPatient patient = patientRepository.findById(id).map(DtoResponseBriefPatient::new).orElseThrow(()->new ValidationIntegration("Patient not found"));
         DtoRequestDoctor dtoRequestDoctor =  doctorClient.findDoctorByPatientId(id);
 
         DtoResponsePatientByDoctor responsePatientByDoctor = new DtoResponsePatientByDoctor(patient, dtoRequestDoctor);

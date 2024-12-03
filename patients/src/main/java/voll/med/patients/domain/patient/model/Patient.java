@@ -21,7 +21,7 @@ public class Patient {
     @Column(name = "gender")
     private String gender;
     private LocalDate birthdaydate;
-    @Column(name = "phone_number", length = 9)
+    @Column(name = "phone_number")
     private String phoneNumber;
     @Column(name = "email", unique = true)
     private String email;
@@ -44,16 +44,16 @@ public class Patient {
     }
 
     public void update(DtoUpdatePatient dtoUpdatePatient) {
-        if(dtoUpdatePatient.firstName() != null){
+        if(dtoUpdatePatient.firstName() != null && dtoUpdatePatient.firstName().isBlank()){
             this.firstName = dtoUpdatePatient.firstName();
         }
-        if(dtoUpdatePatient.lastName() != null){
+        if(dtoUpdatePatient.lastName() != null && dtoUpdatePatient.firstName().isBlank()){
             this.lastName = dtoUpdatePatient.lastName();
         }
         if(dtoUpdatePatient.birthdaydate() != null){
             this.birthdaydate = dtoUpdatePatient.birthdaydate();
         }
-        if(dtoUpdatePatient.phoneNumber() != null){
+        if(dtoUpdatePatient.phoneNumber() != null && dtoUpdatePatient.firstName().isBlank()){
             this.phoneNumber = dtoUpdatePatient.phoneNumber();
         }
     }

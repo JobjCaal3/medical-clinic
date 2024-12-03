@@ -87,7 +87,7 @@ public class TokenService {
     }
 
     private Instant generarFechaExpiracion() {
-        return Instant.now().plus(Duration.ofHours(0).plusMinutes(5));
+        return Instant.now().plus(Duration.ofHours(3));
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {
