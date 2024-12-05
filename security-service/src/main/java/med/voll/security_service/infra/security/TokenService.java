@@ -30,6 +30,11 @@ public class TokenService {
     @Value("${security.jwt.user.generator}")
     private String propietarieGenerator;
 
+    /**
+     * is responsible for creating the token with its respective values and encoding it
+     * @param user brings certain user values
+     * @return
+     */
     public String createToken(User user) {
         String JwtToken;
         String userName = user.getUserName();
@@ -52,7 +57,12 @@ public class TokenService {
         }
         return JwtToken;
     }
-
+    /**
+     * it is resposible for verifying the token is valid, so if the token is not expired
+     * and if the token contains de propietarie, signature or token is not altered
+     * @param token contains the token
+     * @return
+     */
     public Boolean validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -70,6 +80,11 @@ public class TokenService {
         }
     }
 
+    /**
+     * is responsible for estract de username of the token
+     * @param token contains the token
+     * @return
+     */
     public String extractUsername(String token) {
         DecodedJWT verifier;
         try {
@@ -86,10 +101,20 @@ public class TokenService {
         return verifier.getSubject();
     }
 
+    /**
+     * is responsible for creat a date of expiration of the token
+     * @return a stimation time of class {@link Instant}
+     */
     private Instant generarFechaExpiracion() {
         return Instant.now().plus(Duration.ofHours(3));
     }
 
+    /**
+     * With this you can extract any specific claim from the token
+     * @param decodedJWT
+     * @param claimName stores the name of the claim
+     * @return
+     */
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName) {
         return decodedJWT.getClaim(claimName);
     }

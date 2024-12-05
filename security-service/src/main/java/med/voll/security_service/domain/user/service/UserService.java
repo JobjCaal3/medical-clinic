@@ -40,9 +40,19 @@ public class UserService {
         this.tokenService = tokenService;
     }
 
+    /**
+     * is responsible for creation a user with all data's.
+     * {@link PasswordEncoder} it is used to encrypt the password.
+     * {@code userExist} is responsible for checking if the user exists in the database
+     * @param registerDoctorUser contains the user registration data and {@code doctorRegisterData}  this contains
+     *                           all data's of the doctor.
+     * {@link IDoctorClient} this class contains the endpoint for register doctor.
+     * @param uriComponentsBuilder
+     * @return the data's of de user and of the data doctor's
+     */
     public ResponseEntity<DtoResponseUserDoctor> registerDoctorUser(DtoRegisterDoctorUser registerDoctorUser, UriComponentsBuilder uriComponentsBuilder) {
-        Optional<User> user = userRepository.findByUserName(registerDoctorUser.userName());
-        if (user.isPresent()) {
+        Optional<User> userExist = userRepository.findByUserName(registerDoctorUser.userName());
+        if (userExist.isPresent()) {
             throw new ValidationIntegration("username in use");
         }
 
@@ -60,7 +70,16 @@ public class UserService {
         return ResponseEntity.created(url).body(new DtoResponseUserDoctor(newUser, doctor.getBody()));
     }
 
-
+    /**
+     * is responsible for creation a user with all data's.
+     * {@link PasswordEncoder} it is used to encrypt the password.
+     * {@code userExist} is responsible for checking if the user exists in the database
+     * @param registerPatientUser contains the user registration data and {@code patientRegisterData}  this contains
+     *                           all data's of the patient.
+     * {@link IPatientClient} this class contains the endpoint for register patient.
+     * @param uriComponentsBuilder
+     * @return the data's of de user and of the data patient's
+     */
     public ResponseEntity<DtoResponseUserPatient> registerPatientUser(DtoRegisterPatientUser registerPatientUser, UriComponentsBuilder uriComponentsBuilder) {
         Optional<User> userExist = userRepository.findByUserName(registerPatientUser.userName());
         if (userExist.isPresent()) {
@@ -82,7 +101,16 @@ public class UserService {
         return ResponseEntity.created(url).body(new DtoResponseUserPatient(newUser, patient.getBody()));
     }
 
-
+    /**
+     * {@link #loginUser(DtoLoginUser)} is responsible for start of season of the user, always and where enter
+     * correctly their credentials.
+     * in this method we are checking if the username exists in the database or not,
+     * the count it's blocked or not if the count is blocking throw an exception to this count is blocked,
+     * is this password is correcting through a method belonging to {@link PasswordEncoder} {@code matche}.
+     * if it passes all the checks, the token is created
+     * @param loginUser contains de data for start of season, such as password and username
+     * @return the created token
+     */
     public ResponseEntity<DtoResponseLoginUser> loginUser(DtoLoginUser loginUser) {
         User user = userRepository.findByUserName(loginUser.userName()).orElseThrow(() -> new ValidationIntegration("Incorrect password or username, enter your credentials correctly"));
 

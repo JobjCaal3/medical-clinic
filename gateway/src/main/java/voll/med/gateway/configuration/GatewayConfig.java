@@ -14,6 +14,11 @@ public class GatewayConfig {
     @Autowired
     private AuthenticationFilter filter;
 
+    /**
+     * redirect the urls to their respective microservices
+     * @param builder in charge of building the routes
+     * @return
+     */
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()

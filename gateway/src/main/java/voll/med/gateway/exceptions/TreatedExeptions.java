@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TreatedExeptions {
 
-
     @ExceptionHandler(ValidationIntegration.class)
     public ResponseEntity<String> treatedValidationItegration(ValidationIntegration e){
         return ResponseEntity.status(e.getStatus()).body(e.getMessage());
