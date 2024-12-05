@@ -31,6 +31,12 @@ public class AuthenticationFilter implements GatewayFilter {
         this.jwtUtils = jwtUtils;
     }
 
+    /**
+     *in charge of prior security and token validation
+     * @param exchange the current server exchange
+     * @param chain provides a way to delegate to the next filter
+     * @return
+     */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -49,7 +55,11 @@ public class AuthenticationFilter implements GatewayFilter {
         return chain.filter(exchange);
     }
 
-
+    /**
+     *responsible for checking if the header contains authorization
+     * @param request
+     * @return
+     */
     private Boolean authenticationMissing(ServerHttpRequest request){
         return !request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION);
     }

@@ -16,7 +16,12 @@ public class JwtUtils {
     @Value("${security.jwt.user.generator}")
     private String propietarieGenerator;
 
-
+    /**
+     * it is resposible for verifying the token is valid, so if the token is not expired
+     * and if the token contains de propietarie, signature or token is not altered
+     * @param bearerToken contains the token
+     * @return
+     */
     public Boolean validateToken(String bearerToken) {
         String token = bearerToken.substring(7, bearerToken.length());
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
