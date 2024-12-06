@@ -8,6 +8,6 @@ spring:
       server:
         git:
           uri: https://github.com/JobjCaal3/medical-clinic.git
-          search-paths: config-data
+          search-paths: development-configuration-data
           default-label: configurations
 
