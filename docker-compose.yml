@@ -1,0 +1,141 @@
+version: "3.4"
+services:
+  medical-clinic-gateway:
+    image: medical-clinic-microservice-gateway
+    container_name: medical-clinic-gateway
+    build:
+      context: gateway
+      dockerfile: Dockerfile-gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - microservice-network
+    depends_on:
+      - medical-clinic-configurations
+      - medical-clinic-eureka-dicovery
+
+  medical-clinic-configurations:
+    image: medical-clinic-microservice-configurations
+    container_name: medical-clinic-configurations
+    build:
+      context: configurations
+      dockerfile: Dockerfile-configurations
+    ports:
+      - "8081:8081"
+    networks:
+      - microservice-network
+
+  medical-clinic-doctors:
+    image: medical-clinic-microservice-doctors
+    container_name: medical-clinic-doctors
+    build:
+      context: doctors
+      dockerfile: Dockerfile-doctor
+    ports:
+      - "8082:8082"
+    networks:
+      - microservice-network
+    volumes:
+      - doctors-data:/var/lib/mysql
+    depends_on:
+      - mysql-doctors
+      - medical-clinic-configurations
+      - medical-clinic-eureka-dicovery
+
+  medical-clinic-patients:
+    image: medical-clinic-microservice-patients
+    container_name: medical-clinic-patients
+    build:
+      context: patients
+      dockerfile: Dockerfile-patients
+    ports:
+      - "8083:8083"
+    networks:
+      - microservice-network
+    volumes:
+      - patients-data:/var/lib/mysql
+    depends_on:
+      - mysql-patients
+      - medical-clinic-configurations
+      - medical-clinic-eureka-dicovery
+
+  medical-clinic-security-service:
+    image: medical-clinic-microservice-security-service
+    container_name: medical-clinic-security-service
+    build:
+      context: security-service
+      dockerfile: Dockerfile-security-service
+    ports:
+      - "8084:8084"
+    networks:
+      - microservice-network
+    volumes:
+      - security-data
+    depends_on:
+      - mysql-security-service
+      - medical-clinic-configurations
+      - medical-clinic-eureka-dicovery
+
+  medical-clinic-eureka-dicovery:
+    image: medical-clinic-microservice-eureka-dicovery
+    container_name: medical-clinic-eureka-dicovery
+    build:
+      context: eureka-discovery
+      dockerfile: Dockerfile-eureka-discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - microservice-network
+    depends_on:
+      - medical-clinic-configurations
+
+  mysql-patients:
+    image: mysql:8.0.34
+    container_name: mysql-patients
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_Password}
+      MYSQL_USER: ${DB_User_MYSQL}
+      MYSQL_DATABASE: data_base_patients
+    ports:
+      - "3307:3306"
+    networks:
+      - microservice-network
+    volumes:
+      - patients-data:/var/lib/mysql
+
+  mysql-doctors:
+    image: mysql:8.0.34
+    container_name: mysql-doctors
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_Password}
+      MYSQL_USER: ${DB_User_MYSQL}
+      MYSQL_DATABASE: data_base_doctors
+    ports:
+      - "3308:3306"
+    networks:
+      - microservice-network
+    volumes:
+      - doctors-data:/var/lib/mysql
+
+  mysql-security-service:
+    image: mysql:8.0.34
+    container_name: mysql-security-service
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_Password}
+      MYSQL_USER: ${DB_User_MYSQL}
+      MYSQL_DATABASE: data_base_security
+    ports:
+      - "3309:3306"
+    networks:
+      - microservice-network
+    volumes:
+      - security-data:/var/lib/mysql
+
+volumes:
+  security-data:
+  doctors-data:
+  patients-data:
+
+networks:
+  microservice-network:
+    driver: bridge
