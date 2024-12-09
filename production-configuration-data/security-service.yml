@@ -7,7 +7,7 @@ spring:
     name: security-service
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_Host_MYSQL}/data_base_security
+    url: jdbc:mysql://mysql-security-service:3306/data_base_security
     username: ${DB_User_MYSQL}
     password: ${DB_Password}
   jpa:
