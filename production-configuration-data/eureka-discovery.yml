@@ -7,7 +7,7 @@ spring:
 eureka:
   instance:
     #despues cambiar por el nombre del contenedor
-    hostname: localhost
+    hostname: medical-clinic-eureka-dicovery
     prefer-ip-address: false
   client:
     register-with-eureka: false

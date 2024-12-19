@@ -19,6 +19,6 @@ eureka:
     service-url:
       default-zone: http://${eureka.instance.hostname}:8761/eureka/
   instance:
-    hostname: localhost
+    hostname: medical-clinic-eureka-dicovery
     prefer-ip-address: true
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}

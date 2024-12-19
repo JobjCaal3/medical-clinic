@@ -1,25 +1,13 @@
 server:
-  port: 8084
-  #error:
-    #include-stacktrace: never
+  port: 0
+
 spring:
   application:
-    name: security-service
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-security-service:3306/data_base_security
-    username: ${DB_User_MYSQL}
-    password: ${DB_Password}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
+    name: notify-center
   cloud:
     loadbalancer:
       ribbon:
         enabled: false
-
 eureka:
   client:
     fetch-registry: true
@@ -30,5 +18,3 @@ eureka:
     hostname: medical-clinic-eureka-dicovery
     prefer-ip-address: true
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-
-

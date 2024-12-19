@@ -1,24 +1,13 @@
 server:
-  port: 8082
+  port: 0
 
 spring:
   application:
-    name: doctors
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-doctors:3306/data_base_doctors
-    username: ${DB_User_MYSQL}
-    password: ${DB_Password}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQLDialect
+    name: notify-center
   cloud:
     loadbalancer:
       ribbon:
         enabled: false
-
 eureka:
   client:
     fetch-registry: true
@@ -26,6 +15,6 @@ eureka:
     service-url:
       default-zone: http://${eureka.instance.hostname}:8761/eureka/
   instance:
-    hostname: medical-clinic-eureka-dicovery
+    hostname: localhost
     prefer-ip-address: true
     instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}

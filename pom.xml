@@ -26,6 +26,7 @@
 		<module>doctors</module>
 		<module>patients</module>
 		<module>security-service</module>
+		<module>notify-center</module>
 	</modules>
 
 	<dependencies>
